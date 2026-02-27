@@ -1,0 +1,21 @@
+<%- include("layout", { title: "Criar conta", body: `
+  <div class="card">
+    <div class="h">Criar conta</div>
+    ${error ? `<div class="card" style="border-color:#6b2033;background:#2a0a12;">${error}</div>` : ""}
+    <form method="post" action="/register">
+      <label class="small">E-mail</label>
+      <input name="email" />
+      <br/><br/>
+      <label class="small">Usuário (apelido)</label>
+      <input name="username" />
+      <br/><br/>
+      <label class="small">Nome completo</label>
+      <input name="full_name" />
+      <br/><br/>
+      <label class="small">Senha</label>
+      <input type="password" name="password" />
+      <br/><br/>
+      <button class="btn" type="submit">Criar</button>
+    </form>
+  </div>
+` }) %>

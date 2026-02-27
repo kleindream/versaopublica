@@ -1,0 +1,20 @@
+<%- include("layout", { title: "Notificações", body: `
+  <div class="card">
+    <div class="h">Notificações</div>
+    <form method="post" action="/notifications/readall">
+      <button class="btn secondary" type="submit">Marcar tudo como lido</button>
+    </form>
+  </div>
+
+  <div class="card">
+    ${notifs.length ? notifs.map(n => `
+      <div class="card" style="background:${n.is_read ? "var(--panel2)" : "var(--panel)"};">
+        <div class="small">${n.created_at} • <span class="badge">${n.type}</span> ${n.is_read ? `<span class="badge">lida</span>` : `<span class="badge">nova</span>`}</div>
+        <div>${escapeHtml(n.text)}</div>
+        ${n.link ? `<div><a href="${n.link}">Abrir</a></div>` : ``}
+      </div>
+    `).join("") : `<div class="small">Nada por aqui.</div>`}
+  </div>
+` }) %>
+
+<% function escapeHtml(str){ return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); } %>

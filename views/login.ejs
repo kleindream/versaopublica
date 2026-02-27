@@ -1,0 +1,15 @@
+<%- include("layout", { title: "Entrar", body: `
+  <div class="card">
+    <div class="h">Entrar</div>
+    ${error ? `<div class="card" style="border-color:#6b2033;background:#2a0a12;">${error}</div>` : ""}
+    <form method="post" action="/login">
+      <label class="small">Usuário ou e-mail</label>
+      <input name="usernameOrEmail" />
+      <br/><br/>
+      <label class="small">Senha</label>
+      <input type="password" name="password" />
+      <br/><br/>
+      <button class="btn" type="submit">Entrar</button>
+    </form>
+  </div>
+` }) %>

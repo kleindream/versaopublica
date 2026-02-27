@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title><%= title || "KleinDream" %></title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div class="topbar">
+    <div class="container">
+      <div class="brand"><a href="/"><span>Klein</span>Dream</a></div>
+
+      <div class="nav">
+        <% if (me) { %>
+          <a href="/home">Início</a>
+          <a href="/u/<%= me.username %>">Meu perfil</a>
+          <a href="/friends">Amigos</a>
+          <a href="/groups">Grupos</a>
+          <a href="/messages">Mensagens</a>
+          <a href="/search">Buscar</a>
+          <a href="/notifications">Notificações <span class="badge"><%= notifCount %></span></a>
+          <form method="post" action="/logout" style="display:inline;">
+            <button class="btn secondary" type="submit">Sair</button>
+          </form>
+        <% } else { %>
+          <a href="/login">Entrar</a>
+          <a href="/register">Criar conta</a>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <%- body %>
+    <div class="small" style="margin:20px 0 10px 0; opacity:.8;">
+      KleinDream — estilo 2004 • sem timeline
+    </div>
+  </div>
+</body>
+</html>

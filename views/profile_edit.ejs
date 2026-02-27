@@ -1,0 +1,27 @@
+<%- include("layout", { title: "Editar perfil", body: `
+  <div class="card">
+    <div class="h">Editar perfil</div>
+    ${error ? `<div class="card" style="border-color:#6b2033;background:#2a0a12;">${error}</div>` : ""}
+    ${ok ? `<div class="card" style="border-color:#1e5f2b;background:#0b2411;">${ok}</div>` : ""}
+
+    <form method="post" action="/profile/edit">
+      <label class="small">Nome completo</label>
+      <input name="full_name" value="${me.full_name || ""}" />
+
+      <br/><br/>
+      <label class="small">Cidade</label>
+      <input name="city" value="${me.city || ""}" />
+
+      <br/><br/>
+      <label class="small">Estado</label>
+      <input name="state" value="${me.state || ""}" />
+
+      <br/><br/>
+      <label class="small">Sobre mim</label>
+      <textarea name="bio">${me.bio || ""}</textarea>
+
+      <br/>
+      <button class="btn" type="submit">Salvar</button>
+    </form>
+  </div>
+` }) %>

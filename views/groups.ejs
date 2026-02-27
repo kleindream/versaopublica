@@ -1,0 +1,47 @@
+<%- include("layout", { title: "Grupos", body: `
+  <div class="grid">
+    <div class="card">
+      <div class="h">Criar grupo</div>
+      ${error ? `<div class="card" style="border-color:#6b2033;background:#2a0a12;">${error}</div>` : ""}
+
+      <form method="post" action="/groups/create">
+        <label class="small">Nome</label>
+        <input name="name" />
+        <br/><br/>
+        <label class="small">Categoria</label>
+        <input name="category" placeholder="Ex: Games, Música, Tecnologia..." />
+        <br/><br/>
+        <label class="small">Descrição</label>
+        <textarea name="description"></textarea>
+        <br/>
+        <button class="btn" type="submit">Criar</button>
+      </form>
+
+      <hr/>
+      <div class="h">Meus grupos</div>
+      ${myGroups.length ? myGroups.map(g => `
+        <div><a href="/groups/${g.id}">${escapeHtml(g.name)}</a></div>
+      `).join("") : `<div class="small">Você não participa de nenhum grupo.</div>`}
+    </div>
+
+    <div class="card">
+      <div class="h">Todos os grupos</div>
+      ${groups.length ? `
+        <table class="table">
+          <thead><tr><th>Nome</th><th>Categoria</th><th>Membros</th></tr></thead>
+          <tbody>
+            ${groups.map(g => `
+              <tr>
+                <td><a href="/groups/${g.id}">${escapeHtml(g.name)}</a></td>
+                <td>${escapeHtml(g.category || "")}</td>
+                <td>${g.members}</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      ` : `<div class="small">Ainda não existem grupos.</div>`}
+    </div>
+  </div>
+` }) %>
+
+<% function escapeHtml(str){ return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); } %>

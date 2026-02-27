@@ -1,0 +1,44 @@
+<%- include("layout", { title: "Depoimentos", body: `
+  <div class="card">
+    <div class="h">Depoimentos de ${user.username}</div>
+
+    <form method="post" action="/testimonials/${user.username}">
+      <label class="small">Enviar depoimento</label>
+      <textarea name="content" placeholder="Escreva um depoimento..."></textarea>
+      <br/>
+      <button class="btn" type="submit">Enviar</button>
+    </form>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="h">Aprovados</div>
+      ${approved.length ? approved.map(t => `
+        <div>
+          <div class="small">de <a href="/u/${t.from_username}">${t.from_username}</a> • ${t.created_at}</div>
+          <div>${escapeHtml(t.content)}</div>
+        </div><hr/>
+      `).join("") : `<div class="small">Sem depoimentos aprovados.</div>`}
+    </div>
+
+    <div class="card">
+      <div class="h">Pendentes (somente dono do perfil)</div>
+      ${pendingMine && pendingMine.length ? pendingMine.map(t => `
+        <div>
+          <div class="small">de <a href="/u/${t.from_username}">${t.from_username}</a> • ${t.created_at}</div>
+          <div>${escapeHtml(t.content)}</div>
+          <div class="row">
+            <form method="post" action="/testimonials/approve/${t.id}">
+              <button class="btn" type="submit">Aprovar</button>
+            </form>
+            <form method="post" action="/testimonials/reject/${t.id}">
+              <button class="btn danger" type="submit">Recusar</button>
+            </form>
+          </div>
+        </div><hr/>
+      `).join("") : `<div class="small">Nada pendente.</div>`}
+    </div>
+  </div>
+` }) %>
+
+<% function escapeHtml(str){ return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); } %>

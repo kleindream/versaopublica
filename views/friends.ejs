@@ -1,0 +1,45 @@
+<%- include("layout", { title: "Amigos", body: `
+  <div class="card">
+    <div class="h">Meus amigos</div>
+    ${friends.length ? `
+      <table class="table">
+        <thead><tr><th>Usuário</th><th>Nome</th><th></th></tr></thead>
+        <tbody>
+          ${friends.map(f => `
+            <tr>
+              <td><a href="/u/${f.username}">${f.username}</a></td>
+              <td>${f.full_name || ""}</td>
+              <td>
+                <form method="post" action="/friends/remove/${f.id}">
+                  <button class="btn danger" type="submit">Remover</button>
+                </form>
+              </td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    ` : `<div class="small">Você ainda não tem amigos aqui.</div>`}
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="h">Pedidos recebidos</div>
+      ${incomingRequests.length ? incomingRequests.map(r => `
+        <div class="row">
+          <div><a href="/u/${r.username}">${r.username}</a> ${r.full_name ? `(${r.full_name})` : ""}</div>
+          <form method="post" action="/friends/accept/${r.id}"><button class="btn" type="submit">Aceitar</button></form>
+          <form method="post" action="/friends/reject/${r.id}"><button class="btn danger" type="submit">Recusar</button></form>
+        </div><hr/>
+      `).join("") : `<div class="small">Nada aqui.</div>`}
+    </div>
+
+    <div class="card">
+      <div class="h">Pedidos enviados</div>
+      ${outgoingRequests.length ? outgoingRequests.map(r => `
+        <div class="row">
+          <div><a href="/u/${r.username}">${r.username}</a> — <span class="badge">${r.status}</span></div>
+        </div><hr/>
+      `).join("") : `<div class="small">Nada aqui.</div>`}
+    </div>
+  </div>
+` }) %>

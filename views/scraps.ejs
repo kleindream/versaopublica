@@ -1,0 +1,24 @@
+<%- include("layout", { title: "Recados", body: `
+  <div class="card">
+    <div class="h">Recados de ${user.username}</div>
+
+    <form method="post" action="/scraps/${user.username}">
+      <label class="small">Escrever recado</label>
+      <textarea name="content" placeholder="Escreva um recado..."></textarea>
+      <br/>
+      <button class="btn" type="submit">Enviar</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <div class="h">Recados</div>
+    ${scraps.length ? scraps.map(s => `
+      <div>
+        <div class="small">de <a href="/u/${s.from_username}">${s.from_username}</a> • ${s.created_at}</div>
+        <div>${escapeHtml(s.content)}</div>
+      </div><hr/>
+    `).join("") : `<div class="small">Sem recados.</div>`}
+  </div>
+` }) %>
+
+<% function escapeHtml(str){ return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); } %>

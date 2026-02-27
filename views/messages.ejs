@@ -1,0 +1,61 @@
+<%- include("layout", { title: "Mensagens", body: `
+  <div class="card">
+    <div class="h">Enviar mensagem</div>
+    ${error ? `<div class="card" style="border-color:#6b2033;background:#2a0a12;">${error}</div>` : ""}
+    ${ok ? `<div class="card" style="border-color:#1e5f2b;background:#0b2411;">${ok}</div>` : ""}
+
+    <form method="post" action="/messages/send">
+      <label class="small">Para (usuário)</label>
+      <input name="to" />
+      <br/><br/>
+      <label class="small">Assunto</label>
+      <input name="subject" />
+      <br/><br/>
+      <label class="small">Mensagem</label>
+      <textarea name="body"></textarea>
+      <br/>
+      <button class="btn" type="submit">Enviar</button>
+    </form>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="h">Caixa de entrada</div>
+      ${inbox.length ? `
+        <table class="table">
+          <thead><tr><th>De</th><th>Assunto</th><th>Status</th><th>Data</th></tr></thead>
+          <tbody>
+            ${inbox.map(m => `
+              <tr>
+                <td>${m.from_username}</td>
+                <td><a href="/messages/${m.id}">${escapeHtml(m.subject)}</a></td>
+                <td>${m.is_read ? `<span class="badge">lida</span>` : `<span class="badge">nova</span>`}</td>
+                <td class="small">${m.created_at}</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      ` : `<div class="small">Vazio.</div>`}
+    </div>
+
+    <div class="card">
+      <div class="h">Enviadas</div>
+      ${outbox.length ? `
+        <table class="table">
+          <thead><tr><th>Para</th><th>Assunto</th><th>Data</th></tr></thead>
+          <tbody>
+            ${outbox.map(m => `
+              <tr>
+                <td>${m.to_username}</td>
+                <td>${escapeHtml(m.subject)}</td>
+                <td class="small">${m.created_at}</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      ` : `<div class="small">Vazio.</div>`}
+    </div>
+  </div>
+` }) %>
+
+<% function escapeHtml(str){ return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); } %>

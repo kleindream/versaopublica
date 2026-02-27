@@ -1,0 +1,72 @@
+<%- include("layout", { title: "Grupo", body: `
+  <div class="grid">
+    <div>
+      <div class="card">
+        <div class="h">Grupo</div>
+        <div style="font-size:18px;font-weight:bold;">${escapeHtml(group.name)}</div>
+        <div class="small">${escapeHtml(group.category || "")}</div>
+        <hr/>
+        <div>${escapeHtml(group.description || "—")}</div>
+
+        <hr/>
+        ${membership ? `
+          <div class="badge">Você é membro (${membership.role})</div>
+          ${membership.role !== "owner" ? `
+            <form method="post" action="/groups/${group.id}/leave">
+              <button class="btn danger" type="submit">Sair do grupo</button>
+            </form>
+          ` : `<div class="small">Você é o dono do grupo.</div>`}
+        ` : `
+          <form method="post" action="/groups/${group.id}/join">
+            <button class="btn" type="submit">Entrar no grupo</button>
+          </form>
+        `}
+      </div>
+
+      <div class="card">
+        <div class="h">Membros</div>
+        ${members.map(m => `
+          <div class="row">
+            <div><a href="/u/${m.username}">${m.username}</a> ${m.full_name ? `(${escapeHtml(m.full_name)})` : ""}</div>
+            <div class="badge">${m.role}</div>
+          </div>
+        `).join("")}
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <div class="h">Fórum</div>
+
+        ${membership ? `
+          <form method="post" action="/groups/${group.id}/topics/create">
+            <label class="small">Novo tópico</label>
+            <input name="title" placeholder="Título do tópico" />
+            <br/><br/>
+            <textarea name="content" placeholder="Mensagem inicial..."></textarea>
+            <br/>
+            <button class="btn" type="submit">Criar tópico</button>
+          </form>
+          <hr/>
+        ` : `<div class="small">Entre no grupo para criar tópicos e responder.</div><hr/>`}
+
+        ${topics.length ? `
+          <table class="table">
+            <thead><tr><th>Título</th><th>Autor</th><th>Data</th></tr></thead>
+            <tbody>
+              ${topics.map(t => `
+                <tr>
+                  <td><a href="/groups/${group.id}/topic/${t.id}">${escapeHtml(t.title)}</a></td>
+                  <td>${t.author}</td>
+                  <td class="small">${t.created_at}</td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        ` : `<div class="small">Sem tópicos ainda.</div>`}
+      </div>
+    </div>
+  </div>
+` }) %>
+
+<% function escapeHtml(str){ return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); } %>

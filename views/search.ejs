@@ -1,0 +1,58 @@
+<%- include("layout", { title: "Buscar", body: `
+  <div class="card">
+    <div class="h">Buscar</div>
+    <form method="get" action="/search">
+      <div class="row">
+        <input name="q" value="${escapeHtml(q)}" placeholder="Digite um nome, usuário, cidade..." />
+        <select name="type" style="max-width:220px;">
+          <option value="people" ${type==="people"?"selected":""}>Pessoas</option>
+          <option value="groups" ${type==="groups"?"selected":""}>Grupos</option>
+        </select>
+        <button class="btn" type="submit">Buscar</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="card">
+    <div class="h">Resultados</div>
+
+    ${q ? (type==="people" ? `
+      ${people.length ? `
+        <table class="table">
+          <thead><tr><th>Usuário</th><th>Nome</th><th>Local</th><th></th></tr></thead>
+          <tbody>
+            ${people.map(p => `
+              <tr>
+                <td><a href="/u/${p.username}">${p.username}</a></td>
+                <td>${escapeHtml(p.full_name || "")}</td>
+                <td class="small">${escapeHtml((p.city||"") + (p.state?(" - "+p.state):""))}</td>
+                <td>
+                  <form method="post" action="/friends/request/${p.id}">
+                    <button class="btn secondary" type="submit">Adicionar</button>
+                  </form>
+                </td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      ` : `<div class="small">Nada encontrado.</div>`}
+    ` : `
+      ${groups.length ? `
+        <table class="table">
+          <thead><tr><th>Grupo</th><th>Categoria</th><th>Membros</th></tr></thead>
+          <tbody>
+            ${groups.map(g => `
+              <tr>
+                <td><a href="/groups/${g.id}">${escapeHtml(g.name)}</a></td>
+                <td>${escapeHtml(g.category || "")}</td>
+                <td>${g.members}</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      ` : `<div class="small">Nada encontrado.</div>`}
+    `) : `<div class="small">Digite algo e clique em buscar.</div>`}
+  </div>
+` }) %>
+
+<% function escapeHtml(str){ return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); } %>

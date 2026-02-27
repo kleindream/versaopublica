@@ -1,0 +1,30 @@
+<%- include("layout", { title: "Tópico", body: `
+  <div class="card">
+    <div class="h"><a href="/groups/${group.id}">Voltar ao grupo</a></div>
+    <div style="font-size:18px;font-weight:bold;">${escapeHtml(topic.title)}</div>
+    <div class="small">por ${topic.author} • ${topic.created_at}</div>
+  </div>
+
+  <div class="card">
+    <div class="h">Mensagens</div>
+    ${posts.map(p => `
+      <div class="card" style="background:var(--panel2);">
+        <div class="small">${p.author} • ${p.created_at}</div>
+        <div>${escapeHtml(p.content)}</div>
+      </div>
+    `).join("")}
+  </div>
+
+  <div class="card">
+    <div class="h">Responder</div>
+    ${membership ? `
+      <form method="post" action="/groups/${group.id}/topic/${topic.id}/reply">
+        <textarea name="content" placeholder="Escreva sua resposta..."></textarea>
+        <br/>
+        <button class="btn" type="submit">Enviar</button>
+      </form>
+    ` : `<div class="small">Você precisa ser membro para responder.</div>`}
+  </div>
+` }) %>
+
+<% function escapeHtml(str){ return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); } %>

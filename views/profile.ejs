@@ -1,0 +1,73 @@
+<%- include("layout", { title: user.username, body: `
+  <div class="grid">
+    <div>
+      <div class="card">
+        <div class="h">Perfil</div>
+        <div style="font-size:18px;font-weight:bold;">${user.username}</div>
+        <div class="small">${user.full_name || ""}</div>
+        <hr/>
+        <div class="kv">
+          <div class="small">Cidade</div><div>${user.city || "-"}</div>
+          <div class="small">Estado</div><div>${user.state || "-"}</div>
+          <div class="small">Entrou em</div><div>${user.created_at}</div>
+          <div class="small">Amigos</div><div>${friendsCount}</div>
+        </div>
+        <hr/>
+        <div class="small">Sobre</div>
+        <div>${escapeHtml(user.bio || "—")}</div>
+
+        ${isMe ? `
+          <hr/>
+          <a class="btn secondary" href="/profile/edit">Editar perfil</a>
+        ` : `
+          <hr/>
+          ${friend ? `<div class="badge">Vocês são amigos</div>` : ``}
+
+          ${(!friend && !reqOut && !reqIn) ? `
+            <form method="post" action="/friends/request/${user.id}">
+              <button class="btn" type="submit">Adicionar como amigo</button>
+            </form>
+          ` : ``}
+
+          ${reqOut ? `<div class="small">Pedido enviado: ${reqOut.status}</div>` : ``}
+          ${reqIn ? `<div class="small">Esse usuário já te enviou pedido: ${reqIn.status} (veja em Amigos)</div>` : ``}
+        `}
+      </div>
+
+      <div class="card">
+        <div class="h">Ações</div>
+        <div class="row">
+          <a class="btn secondary" href="/scraps/${user.username}">Recados</a>
+          <a class="btn secondary" href="/testimonials/${user.username}">Depoimentos</a>
+          <a class="btn secondary" href="/photos/${user.username}">Fotos</a>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <div class="h">Recados (últimos)</div>
+        ${scraps.length ? scraps.map(s => `
+          <div>
+            <div class="small">de ${s.from_username} • ${s.created_at}</div>
+            <div>${escapeHtml(s.content)}</div>
+          </div><hr/>
+        `).join("") : `<div class="small">Sem recados.</div>`}
+        <a class="btn secondary" href="/scraps/${user.username}">Ver todos</a>
+      </div>
+
+      <div class="card">
+        <div class="h">Depoimentos (aprovados)</div>
+        ${testimonials.length ? testimonials.map(t => `
+          <div>
+            <div class="small">de ${t.from_username} • ${t.created_at}</div>
+            <div>${escapeHtml(t.content)}</div>
+          </div><hr/>
+        `).join("") : `<div class="small">Sem depoimentos aprovados.</div>`}
+        <a class="btn secondary" href="/testimonials/${user.username}">Ver</a>
+      </div>
+    </div>
+  </div>
+` }) %>
+
+<% function escapeHtml(str){ return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); } %>

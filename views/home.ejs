@@ -1,0 +1,72 @@
+<%- include("layout", { title: "Início", body: `
+  <div class="grid">
+    <div>
+      <div class="card">
+        <div class="h">Atalhos</div>
+        <div class="row" style="gap:6px;">
+          <a class="btn secondary" href="/u/${me.username}">Meu perfil</a>
+          <a class="btn secondary" href="/scraps/${me.username}">Recados</a>
+          <a class="btn secondary" href="/testimonials/${me.username}">Depoimentos</a>
+          <a class="btn secondary" href="/photos/${me.username}">Fotos</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="h">Pedidos de amizade</div>
+        ${incomingRequests.length ? `
+          ${incomingRequests.map(r => `
+            <div class="row">
+              <div><a href="/u/${r.username}">${r.username}</a> ${r.full_name ? `(${r.full_name})` : ""}</div>
+              <form method="post" action="/friends/accept/${r.id}"><button class="btn" type="submit">Aceitar</button></form>
+              <form method="post" action="/friends/reject/${r.id}"><button class="btn danger" type="submit">Recusar</button></form>
+            </div>
+            <hr/>
+          `).join("")}
+        ` : `<div class="small">Nenhum pedido pendente.</div>`}
+      </div>
+
+      <div class="card">
+        <div class="h">Depoimentos pendentes</div>
+        ${pendingTestimonials.length ? `
+          <div class="small">Você tem depoimentos aguardando aprovação.</div>
+          <a class="btn secondary" href="/testimonials/${me.username}">Ver</a>
+        ` : `<div class="small">Nada pendente.</div>`}
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <div class="h">Mensagens não lidas</div>
+        ${unreadMessages.length ? `
+          <table class="table">
+            <thead><tr><th>De</th><th>Assunto</th><th>Data</th></tr></thead>
+            <tbody>
+              ${unreadMessages.map(m => `
+                <tr>
+                  <td>${m.from_username}</td>
+                  <td><a href="/messages/${m.id}">${m.subject}</a></td>
+                  <td class="small">${m.created_at}</td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        ` : `<div class="small">Nenhuma mensagem nova.</div>`}
+      </div>
+
+      <div class="card">
+        <div class="h">Recados recentes</div>
+        ${latestScraps.length ? `
+          ${latestScraps.map(s => `
+            <div>
+              <div class="small">de <a href="/u/${s.from_username}">${s.from_username}</a> • ${s.created_at}</div>
+              <div>${escapeHtml(s.content)}</div>
+            </div>
+            <hr/>
+          `).join("")}
+        ` : `<div class="small">Ainda sem recados.</div>`}
+      </div>
+    </div>
+  </div>
+` }) %>
+
+<% function escapeHtml(str){ return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); } %>

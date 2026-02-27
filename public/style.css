@@ -1,0 +1,146 @@
+
+:root{
+  --bg:#071426;
+  --panel:#0b1f3a;
+  --panel2:#0d274a;
+  --border:#183a66;
+  --text:#e6f0ff;
+  --muted:#b9d3ff;
+  --accent:#4aa3ff;
+  --accent2:#2f7fe6;
+  --danger:#ff6b6b;
+}
+
+*{ 
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family: 'Poppins', Arial, sans-serif;
+  background: linear-gradient(180deg, #050f1c, var(--bg));
+  color:var(--text);
+}
+
+a{ 
+  color:var(--accent); 
+  text-decoration:none; 
+}
+
+a:hover{ 
+  text-decoration:underline; 
+  color: var(--accent2); 
+}
+
+.container{ 
+  max-width:1000px; 
+  margin:0 auto; 
+  padding:16px; 
+}
+
+.card{
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0px 8px 20px rgba(0,0,0,.15);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+h1, h2, h3, h4{
+  font-weight: bold;
+  color: var(--accent);
+}
+
+.row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.button {
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: bold;
+  color: var(--text);
+  background: var(--accent);
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.button:hover {
+  background: var(--accent2);
+  transform: scale(1.05);
+}
+
+.nav {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.badge {
+  background: var(--panel2);
+  color: var(--muted);
+  padding: 6px 12px;
+  border-radius: 50px;
+  font-size: 12px;
+}
+
+input, textarea, select{
+  width:100%;
+  padding:12px;
+  border-radius:8px;
+  border:1px solid var(--border);
+  background: var(--panel2);
+  color: var(--text);
+  outline:none;
+  transition: all 0.3s ease;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--accent);
+}
+
+textarea{
+  min-height: 120px;
+  resize: vertical;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th, .table td {
+  border-bottom: 1px solid var(--border);
+  padding: 12px;
+  text-align: left;
+}
+
+.table th {
+  color: var(--accent);
+}
+
+.photo {
+  width: 140px;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+
+footer {
+  margin-top: 40px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--muted);
+}

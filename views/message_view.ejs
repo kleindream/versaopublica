@@ -1,0 +1,11 @@
+<%- include("layout", { title: "Mensagem", body: `
+  <div class="card">
+    <div class="h"><a href="/messages">Voltar</a></div>
+    <div style="font-size:18px;font-weight:bold;">${escapeHtml(msg.subject)}</div>
+    <div class="small">De: ${msg.from_username} • Para: ${msg.to_username} • ${msg.created_at}</div>
+    <hr/>
+    <div>${escapeHtml(msg.body).replace(/\n/g,"<br/>")}</div>
+  </div>
+` }) %>
+
+<% function escapeHtml(str){ return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); } %>
