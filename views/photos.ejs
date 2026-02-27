@@ -1,53 +1,31 @@
-<%- include("layout", { title: "Fotos", body: `
+
+<%- include("layout", { title: "Fotos", body: `  
   <div class="grid">
     <div>
       <div class="card">
-        <div class="h">Álbuns de ${user.username}</div>
-
+        <div class="h" style="font-size: 2rem; font-weight: 900; color: var(--accent);">Álbuns de ${user.username}</div>
         ${me && me.username === user.username ? `
           <form method="post" action="/albums/create">
-            <label class="small">Novo álbum</label>
+            <label class="small" style="color: var(--text);">Novo álbum</label>
             <input name="title" placeholder="Ex: Amigos, Família, Viagens..." />
             <br/><br/>
-            <button class="btn" type="submit">Criar álbum</button>
+            <button class="button" type="submit">Criar álbum</button>
           </form>
-          <hr/>
-        ` : ""}
-
-        ${albums.length ? albums.map(a => `
-          <div class="card" style="background:var(--panel2);">
-            <div style="font-weight:bold;">${escapeHtml(a.title)}</div>
-            ${me && me.username === user.username ? `
-              <form method="post" action="/photos/upload/${a.id}" enctype="multipart/form-data">
-                <label class="small">Enviar foto para este álbum</label>
-                <input type="file" name="photo" accept="image/*" />
-                <br/><br/>
-                <input name="caption" placeholder="Legenda (opcional)" />
-                <br/><br/>
-                <button class="btn" type="submit">Enviar</button>
-              </form>
-            ` : `<div class="small">Somente o dono do perfil envia fotos.</div>`}
-          </div>
-        `).join("") : `<div class="small">Sem álbuns.</div>`}
+        ` : ''}
       </div>
     </div>
-
     <div>
-      <div class="card">
-        <div class="h">Fotos recentes</div>
-        ${photos.length ? `
-          <div class="row">
-            ${photos.map(p => `
-              <div style="width:140px;">
-                <img class="photo" src="/uploads/${p.filename}" alt="foto" />
-                <div class="small">${p.caption ? escapeHtml(p.caption) : ""}</div>
-              </div>
-            `).join("")}
-          </div>
-        ` : `<div class="small">Sem fotos ainda.</div>`}
+      <div class="card" style="background: var(--panel2);">
+        <div class="h" style="font-size: 2rem; font-weight: 900; color: var(--accent);">Fotos favoritas</div>
+        <div class="grid">
+          ${photos.length ? photos.map(p => `
+            <div class="card" style="margin-top: 10px;">
+              <img src="${p.url}" alt="${p.title}" class="photo" />
+              <div style="text-align: center; color: var(--text);">${p.title}</div>
+            </div>
+          `).join('') : `<p style="color: var(--muted);">Ainda não há fotos. Adicione algumas para começar a compartilhar suas memórias!</p>`}
+        </div>
       </div>
     </div>
   </div>
 ` }) %>
-
-<% function escapeHtml(str){ return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); } %>

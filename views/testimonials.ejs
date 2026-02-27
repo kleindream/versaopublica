@@ -1,44 +1,24 @@
-<%- include("layout", { title: "Depoimentos", body: `
-  <div class="card">
-    <div class="h">Depoimentos de ${user.username}</div>
 
+<%- include("layout", { title: "Depoimentos", body: `  
+  <div class="card">
+    <div class="h" style="font-size: 2rem; font-weight: 900; color: var(--accent);">Depoimentos de ${user.username}</div>
     <form method="post" action="/testimonials/${user.username}">
-      <label class="small">Enviar depoimento</label>
+      <label class="small" style="color: var(--text);">Enviar depoimento</label>
       <textarea name="content" placeholder="Escreva um depoimento..."></textarea>
       <br/>
-      <button class="btn" type="submit">Enviar</button>
+      <button class="button" type="submit">Enviar</button>
     </form>
   </div>
 
   <div class="grid">
-    <div class="card">
-      <div class="h">Aprovados</div>
-      ${approved.length ? approved.map(t => `
-        <div>
-          <div class="small">de <a href="/u/${t.from_username}">${t.from_username}</a> • ${t.created_at}</div>
-          <div>${escapeHtml(t.content)}</div>
-        </div><hr/>
-      `).join("") : `<div class="small">Sem depoimentos aprovados.</div>`}
-    </div>
-
-    <div class="card">
-      <div class="h">Pendentes (somente dono do perfil)</div>
-      ${pendingMine && pendingMine.length ? pendingMine.map(t => `
-        <div>
-          <div class="small">de <a href="/u/${t.from_username}">${t.from_username}</a> • ${t.created_at}</div>
-          <div>${escapeHtml(t.content)}</div>
-          <div class="row">
-            <form method="post" action="/testimonials/approve/${t.id}">
-              <button class="btn" type="submit">Aprovar</button>
-            </form>
-            <form method="post" action="/testimonials/reject/${t.id}">
-              <button class="btn danger" type="submit">Recusar</button>
-            </form>
-          </div>
-        </div><hr/>
-      `).join("") : `<div class="small">Nada pendente.</div>`}
+    <div class="card" style="background: var(--panel2);">
+      <div class="h" style="font-size: 1.8rem; font-weight: 900; color: var(--accent);">Aprovados</div>
+      ${testimonials.length ? testimonials.map(t => `
+        <div class="card" style="margin-top: 10px;">
+          <div class="h" style="color: var(--accent);">De: ${t.from}</div>
+          <p style="color: var(--text);">${t.content}</p>
+        </div>
+      `).join('') : `<p style="color: var(--muted);">Ainda não há depoimentos. Que tal enviar o seu primeiro depoimento?</p>`}
     </div>
   </div>
 ` }) %>
-
-<% function escapeHtml(str){ return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); } %>

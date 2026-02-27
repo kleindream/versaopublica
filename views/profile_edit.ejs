@@ -5,6 +5,9 @@
     ${ok ? `<div class="card" style="border-color:#1e5f2b;background:#0b2411;">${ok}</div>` : ""}
 
     <form method="post" action="/profile/edit">
+
+      <div class="h" style="margin-top:6px;font-size:14px;">Básico</div>
+
       <label class="small">Nome completo</label>
       <input name="full_name" value="${me.full_name || ""}" />
 
@@ -18,7 +21,84 @@
 
       <br/><br/>
       <label class="small">Sobre mim</label>
-      <textarea name="bio">${me.bio || ""}</textarea>
+      <textarea name="bio" rows="5">${me.bio || ""}</textarea>
+
+      <hr/>
+
+      <div class="h" style="margin-top:6px;font-size:14px;">Vida & identidade</div>
+
+      <label class="small">Data de nascimento</label>
+      <input type="date" name="birth_date" value="${me.birth_date || ""}" />
+
+      <br/><br/>
+      <label class="small">Estado civil</label>
+      <select name="marital_status">
+        ${["", "Solteiro(a)", "Namorando", "Casado(a)", "Divorciado(a)", "Viúvo(a)", "É complicado"].map(v => `
+          <option value="${v}" ${((me.marital_status || "") === v) ? "selected" : ""}>${v || "—"}</option>
+        `).join("")}
+      </select>
+
+      <br/><br/>
+      <label class="small">Status de relacionamento</label>
+      <select name="relationship_status">
+        ${["", "Sem pressa", "Disponível", "Comprometido(a)", "Não quero falar sobre isso"].map(v => `
+          <option value="${v}" ${((me.relationship_status || "") === v) ? "selected" : ""}>${v || "—"}</option>
+        `).join("")}
+      </select>
+
+      <br/><br/>
+      <label class="small">Profissão</label>
+      <input name="profession" value="${me.profession || ""}" />
+
+      <br/><br/>
+      <label class="small">Time de futebol</label>
+      <input name="favorite_team" value="${me.favorite_team || ""}" />
+
+      <hr/>
+
+      <div class="h" style="margin-top:6px;font-size:14px;">Gostos & rotina</div>
+
+      <label class="small">Hobbies / interesses</label>
+      <input name="hobbies" placeholder="Ex: games, filmes, TI, música..." value="${me.hobbies || ""}" />
+
+      <br/><br/>
+      <label class="small">Música favorita</label>
+      <input name="favorite_music" value="${me.favorite_music || ""}" />
+
+      <br/><br/>
+      <label class="small">Filme favorito</label>
+      <input name="favorite_movie" value="${me.favorite_movie || ""}" />
+
+      <br/><br/>
+      <label class="small">Jogo favorito</label>
+      <input name="favorite_game" value="${me.favorite_game || ""}" />
+
+      <hr/>
+
+      <div class="h" style="margin-top:6px;font-size:14px;">Jeito de ser</div>
+
+      <label class="small">Personalidade</label>
+      <input name="personality" placeholder="Ex: realista, nostálgico, perfeccionista..." value="${me.personality || ""}" />
+
+      <br/><br/>
+      <label class="small">O que você busca aqui</label>
+      <select name="looking_for">
+        ${["", "Amizades", "Comunidades", "Networking", "Relacionamento", "Só curiosidade"].map(v => `
+          <option value="${v}" ${((me.looking_for || "") === v) ? "selected" : ""}>${v || "—"}</option>
+        `).join("")}
+      </select>
+
+      <br/><br/>
+      <label class="small">Humor de hoje</label>
+      <select name="mood">
+        ${["", "😀 Feliz", "😐 Neutro", "😔 Triste", "😡 Estressado", "😎 De boa"].map(v => `
+          <option value="${v}" ${((me.mood || "") === v) ? "selected" : ""}>${v || "—"}</option>
+        `).join("")}
+      </select>
+
+      <br/><br/>
+      <label class="small">Frase do dia</label>
+      <input name="daily_phrase" value="${me.daily_phrase || ""}" />
 
       <br/>
       <button class="btn" type="submit">Salvar</button>

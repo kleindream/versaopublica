@@ -12,10 +12,6 @@ init();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Pasta persistente de dados (Replit)
-const dataDir = path.join(__dirname, "data");
-if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
-
 // Pastas garantidas
 const uploadsDir = path.join(__dirname, "public", "uploads");
 if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
@@ -29,7 +25,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
   session({
-    store: new SQLiteStore({ db: "sessions.sqlite", dir: dataDir }),
+    store: new SQLiteStore({ db: "sessions.sqlite", dir: "./data" }),
     secret: process.env.SESSION_SECRET || "kleindream_dev_secret",
     resave: false,
     saveUninitialized: false
@@ -38,7 +34,20 @@ app.use(
 
 // Helpers
 function getUserById(id) {
-  return db.prepare("SELECT id, email, username, full_name, bio, city, state, created_at FROM users WHERE id=?").get(id);
+  return db.prepare(`
+    SELECT 
+      u.id, u.email, u.username, u.full_name, u.bio, u.city, u.state, u.created_at,
+      p.birth_date, p.marital_status, p.relationship_status, p.profession, p.favorite_team,
+      p.hobbies, p.favorite_music, p.favorite_movie, p.favorite_game,
+      p.personality, p.looking_for, p.mood, p.daily_phrase, p.updated_at
+    FROM users u
+    LEFT JOIN profile_details p ON p.user_id = u.id
+    WHERE u.id=?
+  `).get(id);
+}
+
+function ensureProfileDetails(userId) {
+  db.prepare("INSERT OR IGNORE INTO profile_details (user_id) VALUES (?)").run(userId);
 }
 
 function requireAuth(req, res, next) {
@@ -89,6 +98,7 @@ app.post("/register", (req, res) => {
 
   const hash = bcrypt.hashSync(password, 10);
   const info = db.prepare("INSERT INTO users (email, username, password_hash, full_name) VALUES (?,?,?,?)").run(email, username, hash, full_name || null);
+  ensureProfileDetails(info.lastInsertRowid);
 
   req.session.userId = info.lastInsertRowid;
   res.redirect("/home");
@@ -155,8 +165,16 @@ app.get("/home", requireAuth, (req, res) => {
 // ===== PERFIL =====
 app.get("/u/:username", requireAuth, (req, res) => {
   const meId = req.session.userId;
-  const user = db.prepare("SELECT id, username, full_name, bio, city, state, created_at FROM users WHERE username=?").get(req.params.username);
+  const user = db.prepare("SELECT 
+      u.id, u.username, u.full_name, u.bio, u.city, u.state, u.created_at,
+      p.birth_date, p.marital_status, p.relationship_status, p.profession, p.favorite_team,
+      p.hobbies, p.favorite_music, p.favorite_movie, p.favorite_game,
+      p.personality, p.looking_for, p.mood, p.daily_phrase, p.updated_at
+    FROM users u
+    LEFT JOIN profile_details p ON p.user_id = u.id
+    WHERE u.username=?").get(req.params.username);
   if (!user) return res.status(404).send("Usuário não encontrado.");
+  ensureProfileDetails(user.id);
 
   const isMe = user.id === meId;
 
@@ -189,19 +207,53 @@ app.get("/u/:username", requireAuth, (req, res) => {
 });
 
 app.get("/profile/edit", requireAuth, (req, res) => {
-  const me = getUserById(req.session.userId);
+  const meId = req.session.userId;
+  ensureProfileDetails(meId);
+  const me = getUserById(meId);
   res.render("profile_edit", { me, error: null, ok: null });
 });
 
 app.post("/profile/edit", requireAuth, (req, res) => {
   const meId = req.session.userId;
-  const { full_name, bio, city, state } = req.body;
+  ensureProfileDetails(meId);
+
+  const {
+    full_name, bio, city, state,
+    birth_date, marital_status, relationship_status, profession, favorite_team,
+    hobbies, favorite_music, favorite_movie, favorite_game,
+    personality, looking_for, mood, daily_phrase
+  } = req.body;
 
   db.prepare("UPDATE users SET full_name=?, bio=?, city=?, state=? WHERE id=?")
     .run(full_name || null, bio || null, city || null, state || null, meId);
 
+  db.prepare(`
+    UPDATE profile_details
+    SET birth_date=?, marital_status=?, relationship_status=?, profession=?, favorite_team=?,
+        hobbies=?, favorite_music=?, favorite_movie=?, favorite_game=?,
+        personality=?, looking_for=?, mood=?, daily_phrase=?,
+        updated_at=datetime('now')
+    WHERE user_id=?
+  `).run(
+    birth_date || null,
+    marital_status || null,
+    relationship_status || null,
+    profession || null,
+    favorite_team || null,
+    hobbies || null,
+    favorite_music || null,
+    favorite_movie || null,
+    favorite_game || null,
+    personality || null,
+    looking_for || null,
+    mood || null,
+    daily_phrase || null,
+    meId
+  );
+
   res.render("profile_edit", { me: getUserById(meId), error: null, ok: "Perfil atualizado." });
 });
+
 
 // ===== AMIZADES =====
 app.get("/friends", requireAuth, (req, res) => {

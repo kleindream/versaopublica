@@ -24,6 +24,25 @@ function init() {
       created_at TEXT DEFAULT (datetime('now'))
     );
 
+
+    CREATE TABLE IF NOT EXISTS profile_details (
+      user_id INTEGER PRIMARY KEY,
+      birth_date TEXT,
+      marital_status TEXT,
+      relationship_status TEXT,
+      profession TEXT,
+      favorite_team TEXT,
+      hobbies TEXT,
+      favorite_music TEXT,
+      favorite_movie TEXT,
+      favorite_game TEXT,
+      personality TEXT,
+      looking_for TEXT,
+      mood TEXT,
+      daily_phrase TEXT,
+      updated_at TEXT DEFAULT (datetime('now'))
+    );
+
     CREATE TABLE IF NOT EXISTS friend_requests (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       from_user_id INTEGER NOT NULL,
@@ -128,6 +147,7 @@ function init() {
       created_at TEXT DEFAULT (datetime('now'))
     );
 
+    CREATE INDEX IF NOT EXISTS idx_profile_details_user ON profile_details(user_id);
     CREATE INDEX IF NOT EXISTS idx_scraps_to_user ON scraps(to_user_id, created_at);
     CREATE INDEX IF NOT EXISTS idx_testimonials_to_user ON testimonials(to_user_id, status, created_at);
     CREATE INDEX IF NOT EXISTS idx_messages_to_user ON messages(to_user_id, is_read, created_at);

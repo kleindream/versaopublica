@@ -1,10 +1,14 @@
-<%- include("layout", { title: "KleinDream", body: `
+
+<%- include("layout", { title: "KleinDream", body: `  
   <div class="card">
-    <div class="h">Bem-vindo ao KleinDream</div>
-    <p>Uma rede social no estilo 2004: perfil, amigos, recados, depoimentos, fotos e grupos.</p>
-    <div class="row">
-      <a class="btn" href="/register">Criar conta</a>
-      <a class="btn secondary" href="/login">Entrar</a>
+    <div class="h" style="font-size: 2.5rem; font-weight: 900; color: var(--accent);">Bem-vindo ao KleinDream!</div>
+    <p style="font-size: 1.2rem; color: var(--text);">Você acabou de entrar em um lugar onde a nostalgia se encontra com a diversão! Reviva os velhos tempos com amigos, fotos e aquela vibe de 2004. O verdadeiro estilo de vida das redes sociais, onde todo mundo tem uma voz e pode compartilhar seus recados, depoimentos e muito mais!</p>
+    <div class="row" style="gap: 12px;">
+      <a class="button" href="/register">Crie sua conta e entre no jogo!</a>
+      <a class="button secondary" href="/login">Já tem conta? Entre agora!</a>
+    </div>
+    <div class="card" style="margin-top: 20px; background: var(--panel2);">
+      <p style="font-size: 1.2rem; color: var(--text); font-style: italic;">Lembre-se: As melhores amizades começam com um simples "Olá!" ✨</p>
     </div>
   </div>
 ` }) %>

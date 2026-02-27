@@ -1,24 +1,22 @@
-<%- include("layout", { title: "Recados", body: `
-  <div class="card">
-    <div class="h">Recados de ${user.username}</div>
 
+<%- include("layout", { title: "Recados", body: `  
+  <div class="card">
+    <div class="h" style="font-size: 2rem; font-weight: 900; color: var(--accent);">Recados de ${user.username}</div>
     <form method="post" action="/scraps/${user.username}">
-      <label class="small">Escrever recado</label>
+      <label class="small" style="color: var(--text);">Escrever recado</label>
       <textarea name="content" placeholder="Escreva um recado..."></textarea>
       <br/>
-      <button class="btn" type="submit">Enviar</button>
+      <button class="button" type="submit">Enviar</button>
     </form>
   </div>
 
   <div class="card">
-    <div class="h">Recados</div>
+    <div class="h" style="font-size: 2rem; font-weight: 900; color: var(--accent);">Recados de amigos e fãs</div>
     ${scraps.length ? scraps.map(s => `
-      <div>
-        <div class="small">de <a href="/u/${s.from_username}">${s.from_username}</a> • ${s.created_at}</div>
-        <div>${escapeHtml(s.content)}</div>
-      </div><hr/>
-    `).join("") : `<div class="small">Sem recados.</div>`}
+      <div class="card" style="margin-top: 10px;">
+        <div class="h" style="color: var(--accent);">De: ${s.from}</div>
+        <p style="color: var(--text);">${s.content}</p>
+      </div>
+    `).join('') : `<p style="color: var(--muted);">Nenhum recado ainda. Deixe o seu primeiro recado para ${user.username}!</p>`}
   </div>
 ` }) %>
-
-<% function escapeHtml(str){ return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); } %>
