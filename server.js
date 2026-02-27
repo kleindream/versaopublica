@@ -203,8 +203,8 @@ app.post("/profile/edit", requireAuth, (req, res) => {
       birth_date=?, marital_status=?, favorite_team=?, profession=?,
       hobbies=?, favorite_music=?, favorite_movie=?, favorite_game=?,
       personality=?, looking_for=?, mood=?, daily_phrase=?
-      WHERE id=?
-    `).run(
+    WHERE id=?`)
+      .run(
       full_name || null, bio || null, city || null, state || null,
       birth_date || null, marital_status || null, favorite_team || null, profession || null,
       hobbies || null, favorite_music || null, favorite_movie || null, favorite_game || null,

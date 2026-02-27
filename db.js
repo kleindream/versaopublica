@@ -34,7 +34,9 @@ function init() {
       looking_for TEXT,
       mood TEXT,
       daily_phrase TEXT,
-    );
+
+      created_at TEXT DEFAULT (datetime('now'))
+    );
 
     CREATE TABLE IF NOT EXISTS friend_requests (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -159,7 +161,7 @@ function init() {
     ["personality", "TEXT"],
     ["looking_for", "TEXT"],
     ["mood", "TEXT"],
-    ["daily_phrase", "TEXT"]
+    ["daily_phrase", "TEXT"],
   ];
 
   for (const [name, type] of extraCols) {
@@ -169,32 +171,6 @@ function init() {
       // coluna já existe — ignora
     }
   }
-
-
-  // Migração simples (Plano A): garante colunas extras no users sem precisar apagar o banco
-  const extraCols = [
-    ["birth_date", "TEXT"],
-    ["marital_status", "TEXT"],
-    ["favorite_team", "TEXT"],
-    ["profession", "TEXT"],
-    ["hobbies", "TEXT"],
-    ["favorite_music", "TEXT"],
-    ["favorite_movie", "TEXT"],
-    ["favorite_game", "TEXT"],
-    ["personality", "TEXT"],
-    ["looking_for", "TEXT"],
-    ["mood", "TEXT"],
-    ["daily_phrase", "TEXT"]
-  ];
-
-  for (const [name, type] of extraCols) {
-    try {
-      db.exec(`ALTER TABLE users ADD COLUMN ${name} ${type}`);
-    } catch (e) {
-      // coluna já existe — ignora
-    }
-  }
-
 }
 
 module.exports = { db, init };

@@ -5,7 +5,7 @@
     ${ok ? `<div class="card" style="border-color:#1e5f2b;background:#0b2411;">${ok}</div>` : ""}
 
     <form method="post" action="/profile/edit">
-      <div class="h" style="font-size:14px;margin-top:10px;">Básico</div>
+      <div class="h" style="margin-top:0">Básico</div>
 
       <label class="small">Nome completo</label>
       <input name="full_name" value="${me.full_name || ""}" />
@@ -22,8 +22,8 @@
       <label class="small">Sobre mim</label>
       <textarea name="bio">${me.bio || ""}</textarea>
 
-      <hr/>
-      <div class="h" style="font-size:14px;">Detalhes</div>
+      <br/><br/>
+      <div class="h">Detalhes</div>
 
       <label class="small">Data de nascimento</label>
       <input type="date" name="birth_date" value="${me.birth_date || ""}" />
@@ -31,9 +31,7 @@
       <br/><br/>
       <label class="small">Estado civil</label>
       <select name="marital_status">
-        ${["","Solteiro(a)","Namorando","Casado(a)","Divorciado(a)","Viúvo(a)","É complicado"].map(v => `
-          <option value="${v}" ${((me.marital_status||"")===v) ? "selected" : ""}>${v==="" ? "—" : v}</option>
-        `).join("")}
+        ${["", "Solteiro(a)", "Namorando", "Casado(a)", "Separado(a)", "Divorciado(a)", "Viúvo(a)", "É complicado"].map(v => `<option value="${v}" ${String(me.marital_status||"")===v?"selected":""}>${v||"(não informar)"}</option>`).join("")}
       </select>
 
       <br/><br/>
@@ -45,12 +43,12 @@
       <input name="profession" value="${me.profession || ""}" placeholder="Ex: Técnico de informática" />
 
       <br/><br/>
-      <label class="small">Hobbies</label>
-      <input name="hobbies" value="${me.hobbies || ""}" placeholder="Ex: filmes, games, fóruns..." />
+      <div class="h">Gostos</div>
 
-      <hr/>
-      <div class="h" style="font-size:14px;">Gostos</div>
+      <label class="small">Hobbies / Interesses</label>
+      <input name="hobbies" value="${me.hobbies || ""}" placeholder="Ex: games, VHS, fóruns, terror" />
 
+      <br/><br/>
       <label class="small">Música favorita</label>
       <input name="favorite_music" value="${me.favorite_music || ""}" />
 
@@ -62,35 +60,30 @@
       <label class="small">Jogo favorito</label>
       <input name="favorite_game" value="${me.favorite_game || ""}" />
 
-      <hr/>
-      <div class="h" style="font-size:14px;">Vibe</div>
+      <br/><br/>
+      <div class="h">Social</div>
 
-      <label class="small">Personalidade</label>
-      <input name="personality" value="${me.personality || ""}" placeholder="Ex: otimista, realista, perfeccionista..." />
+      <label class="small">Traços / Personalidade</label>
+      <input name="personality" value="${me.personality || ""}" placeholder="Ex: otimista, realista, perfeccionista" />
 
       <br/><br/>
-      <label class="small">Estou procurando</label>
+      <label class="small">O que procura aqui</label>
       <select name="looking_for">
-        ${["","Amizades","Networking","Relacionamento","Comunidade","Só explorar"].map(v => `
-          <option value="${v}" ${((me.looking_for||"")===v) ? "selected" : ""}>${v==="" ? "—" : v}</option>
-        `).join("")}
+        ${["", "Amizade", "Networking", "Relacionamento", "Comunidades"].map(v => `<option value="${v}" ${String(me.looking_for||"")===v?"selected":""}>${v||"(não informar)"}</option>`).join("")}
       </select>
 
       <br/><br/>
       <label class="small">Humor de hoje</label>
       <select name="mood">
-        ${["","😀 Feliz","😐 Neutro","😔 Triste","😡 Irritado","😎 De boa","🔥 Animado"].map(v => `
-          <option value="${v}" ${((me.mood||"")===v) ? "selected" : ""}>${v==="" ? "—" : v}</option>
-        `).join("")}
+        ${["", "😀 Feliz", "😐 Neutro", "😔 Triste", "😡 Irritado", "😎 De boa"].map(v => `<option value="${v}" ${String(me.mood||"")===v?"selected":""}>${v||"(não informar)"}</option>`).join("")}
       </select>
 
       <br/><br/>
       <label class="small">Frase do dia</label>
       <input name="daily_phrase" value="${me.daily_phrase || ""}" />
 
-      <br/><br/>
+      <br/>
       <button class="btn" type="submit">Salvar</button>
-      <a class="btn secondary" href="/u/${me.username}" style="margin-left:8px;">Voltar</a>
     </form>
   </div>
 ` }) %>
