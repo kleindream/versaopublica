@@ -12,6 +12,10 @@ init();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Pasta persistente de dados (Replit)
+const dataDir = path.join(__dirname, "data");
+if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
+
 // Pastas garantidas
 const uploadsDir = path.join(__dirname, "public", "uploads");
 if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
@@ -25,7 +29,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
   session({
-    store: new SQLiteStore({ db: "sessions.sqlite", dir: "./data" }),
+    store: new SQLiteStore({ db: "sessions.sqlite", dir: dataDir }),
     secret: process.env.SESSION_SECRET || "kleindream_dev_secret",
     resave: false,
     saveUninitialized: false
