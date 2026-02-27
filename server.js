@@ -37,16 +37,17 @@ function getUserById(id) {
   return db.prepare(`
     SELECT 
       u.id, u.email, u.username, u.full_name, u.bio, u.city, u.state, u.created_at,
-      p.birth_date, p.marital_status, p.relationship_status, p.profession, p.favorite_team,
-      p.hobbies, p.favorite_music, p.favorite_movie, p.favorite_game,
-      p.personality, p.looking_for, p.mood, p.daily_phrase, p.updated_at
+      pd.birth_date, pd.marital_status, pd.favorite_team, pd.profession, pd.education,
+      pd.children, pd.website, pd.hobbies, pd.favorite_music, pd.favorite_movie,
+      pd.favorite_game, pd.looking_for, pd.mood, pd.daily_phrase
     FROM users u
-    LEFT JOIN profile_details p ON p.user_id = u.id
+    LEFT JOIN profile_details pd ON pd.user_id = u.id
     WHERE u.id=?
   `).get(id);
 }
 
 function ensureProfileDetails(userId) {
+  // Garante que exista uma linha de detalhes para qualquer usuário
   db.prepare("INSERT OR IGNORE INTO profile_details (user_id) VALUES (?)").run(userId);
 }
 
@@ -60,6 +61,7 @@ function addNotif(userId, type, text, link = null) {
 }
 
 app.use((req, res, next) => {
+  if (req.session.userId) ensureProfileDetails(req.session.userId);
   res.locals.me = req.session.userId ? getUserById(req.session.userId) : null;
   if (req.session.userId) {
     const notifs = db.prepare("SELECT * FROM notifications WHERE user_id=? AND is_read=0 ORDER BY created_at DESC LIMIT 20").all(req.session.userId);
@@ -98,6 +100,8 @@ app.post("/register", (req, res) => {
 
   const hash = bcrypt.hashSync(password, 10);
   const info = db.prepare("INSERT INTO users (email, username, password_hash, full_name) VALUES (?,?,?,?)").run(email, username, hash, full_name || null);
+
+  // Cria detalhes do perfil automaticamente
   ensureProfileDetails(info.lastInsertRowid);
 
   req.session.userId = info.lastInsertRowid;
@@ -165,15 +169,19 @@ app.get("/home", requireAuth, (req, res) => {
 // ===== PERFIL =====
 app.get("/u/:username", requireAuth, (req, res) => {
   const meId = req.session.userId;
-  const user = db.prepare("SELECT 
+  const user = db.prepare(`
+    SELECT 
       u.id, u.username, u.full_name, u.bio, u.city, u.state, u.created_at,
-      p.birth_date, p.marital_status, p.relationship_status, p.profession, p.favorite_team,
-      p.hobbies, p.favorite_music, p.favorite_movie, p.favorite_game,
-      p.personality, p.looking_for, p.mood, p.daily_phrase, p.updated_at
+      pd.birth_date, pd.marital_status, pd.favorite_team, pd.profession, pd.education,
+      pd.children, pd.website, pd.hobbies, pd.favorite_music, pd.favorite_movie,
+      pd.favorite_game, pd.looking_for, pd.mood, pd.daily_phrase
     FROM users u
-    LEFT JOIN profile_details p ON p.user_id = u.id
-    WHERE u.username=?").get(req.params.username);
+    LEFT JOIN profile_details pd ON pd.user_id = u.id
+    WHERE u.username=?
+  `).get(req.params.username);
   if (!user) return res.status(404).send("Usuário não encontrado.");
+
+  // Se for um usuário antigo sem detalhes ainda, cria na hora
   ensureProfileDetails(user.id);
 
   const isMe = user.id === meId;
@@ -219,41 +227,49 @@ app.post("/profile/edit", requireAuth, (req, res) => {
 
   const {
     full_name, bio, city, state,
-    birth_date, marital_status, relationship_status, profession, favorite_team,
-    hobbies, favorite_music, favorite_movie, favorite_game,
-    personality, looking_for, mood, daily_phrase
+    birth_date, marital_status, favorite_team, profession, education,
+    children, website, hobbies,
+    favorite_music, favorite_movie, favorite_game,
+    looking_for, mood, daily_phrase
   } = req.body;
 
-  db.prepare("UPDATE users SET full_name=?, bio=?, city=?, state=? WHERE id=?")
-    .run(full_name || null, bio || null, city || null, state || null, meId);
+  const tx = db.transaction(() => {
+    db.prepare("UPDATE users SET full_name=?, bio=?, city=?, state=? WHERE id=?")
+      .run(full_name || null, bio || null, city || null, state || null, meId);
 
-  db.prepare(`
-    UPDATE profile_details
-    SET birth_date=?, marital_status=?, relationship_status=?, profession=?, favorite_team=?,
-        hobbies=?, favorite_music=?, favorite_movie=?, favorite_game=?,
-        personality=?, looking_for=?, mood=?, daily_phrase=?,
-        updated_at=datetime('now')
-    WHERE user_id=?
-  `).run(
-    birth_date || null,
-    marital_status || null,
-    relationship_status || null,
-    profession || null,
-    favorite_team || null,
-    hobbies || null,
-    favorite_music || null,
-    favorite_movie || null,
-    favorite_game || null,
-    personality || null,
-    looking_for || null,
-    mood || null,
-    daily_phrase || null,
-    meId
-  );
+    db.prepare(`
+      UPDATE profile_details
+      SET birth_date=?, marital_status=?, favorite_team=?, profession=?, education=?,
+          children=?, website=?, hobbies=?, favorite_music=?, favorite_movie=?,
+          favorite_game=?, looking_for=?, mood=?, daily_phrase=?,
+          updated_at=datetime('now')
+      WHERE user_id=?
+    `).run(
+      birth_date || null,
+      marital_status || null,
+      favorite_team || null,
+      profession || null,
+      education || null,
+      children || null,
+      website || null,
+      hobbies || null,
+      favorite_music || null,
+      favorite_movie || null,
+      favorite_game || null,
+      looking_for || null,
+      mood || null,
+      daily_phrase || null,
+      meId
+    );
+  });
 
-  res.render("profile_edit", { me: getUserById(meId), error: null, ok: "Perfil atualizado." });
+  try {
+    tx();
+    res.render("profile_edit", { me: getUserById(meId), error: null, ok: "Perfil atualizado." });
+  } catch (e) {
+    res.render("profile_edit", { me: getUserById(meId), error: "Não consegui salvar o perfil. Tente novamente.", ok: null });
+  }
 });
-
 
 // ===== AMIZADES =====
 app.get("/friends", requireAuth, (req, res) => {

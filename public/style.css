@@ -145,3 +145,10 @@ hr{ border:0; border-top:1px solid var(--border); margin:10px 0; }
   border-radius:10px;
   border:1px solid var(--border);
 }
+
+/* links padrão */
+a{ color:#93b8ff; text-decoration:none; }
+a:hover{ text-decoration:underline; }
+
+/* link simples dentro de cards */
+.a{ color:#93b8ff; }

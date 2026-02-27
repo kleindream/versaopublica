@@ -9,31 +9,36 @@
         <div class="kv">
           <div class="small">Cidade</div><div>${user.city || "-"}</div>
           <div class="small">Estado</div><div>${user.state || "-"}</div>
-          <div class="small">Nascimento</div><div>${user.birth_date || "-"}</div>
-          <div class="small">Estado civil</div><div>${user.marital_status || "-"}</div>
-          <div class="small">Relacionamento</div><div>${user.relationship_status || "-"}</div>
-          <div class="small">Profissão</div><div>${user.profession || "-"}</div>
-          <div class="small">Time</div><div>${user.favorite_team || "-"}</div>
-          <div class="small">Humor</div><div>${user.mood || "-"}</div>
+	          <div class="small">Nascimento</div><div>${user.birth_date || "-"}</div>
+	          <div class="small">Estado civil</div><div>${user.marital_status || "-"}</div>
+	          <div class="small">Time</div><div>${user.favorite_team || "-"}</div>
+	          <div class="small">Profissão</div><div>${user.profession || "-"}</div>
           <div class="small">Entrou em</div><div>${user.created_at}</div>
           <div class="small">Amigos</div><div>${friendsCount}</div>
-</div>
+        </div>
         <hr/>
         <div class="small">Sobre</div>
         <div>${escapeHtml(user.bio || "—")}</div>
 
-        <hr/>
-        <div class="small">Gostos</div>
-        <div class="kv">
-          <div class="small">Hobbies</div><div>${escapeHtml(user.hobbies || "—")}</div>
-          <div class="small">Música</div><div>${escapeHtml(user.favorite_music || "—")}</div>
-          <div class="small">Filme</div><div>${escapeHtml(user.favorite_movie || "—")}</div>
-          <div class="small">Jogo</div><div>${escapeHtml(user.favorite_game || "—")}</div>
-          <div class="small">Personalidade</div><div>${escapeHtml(user.personality || "—")}</div>
-          <div class="small">Busca</div><div>${escapeHtml(user.looking_for || "—")}</div>
-          <div class="small">Frase do dia</div><div>${escapeHtml(user.daily_phrase || "—")}</div>
-        </div>
+	        <hr/>
+	        <div class="small">Gostos</div>
+	        <div class="kv">
+	          <div class="small">Música</div><div>${escapeHtml(user.favorite_music || "-")}</div>
+	          <div class="small">Filme</div><div>${escapeHtml(user.favorite_movie || "-")}</div>
+	          <div class="small">Jogo</div><div>${escapeHtml(user.favorite_game || "-")}</div>
+	        </div>
 
+	        <hr/>
+	        <div class="small">Extras</div>
+	        <div class="kv">
+	          <div class="small">Hobbies</div><div>${escapeHtml(user.hobbies || "-")}</div>
+	          <div class="small">Escolaridade</div><div>${escapeHtml(user.education || "-")}</div>
+	          <div class="small">Filhos</div><div>${escapeHtml(user.children || "-")}</div>
+	          <div class="small">Website</div><div>${user.website ? `<a class="a" href="${escapeAttr(user.website)}" target="_blank">${escapeHtml(user.website)}</a>` : "-"}</div>
+	          <div class="small">Procura</div><div>${escapeHtml(user.looking_for || "-")}</div>
+	          <div class="small">Humor</div><div>${escapeHtml(user.mood || "-")}</div>
+	          <div class="small">Frase do dia</div><div>${escapeHtml(user.daily_phrase || "-")}</div>
+	        </div>
 
         ${isMe ? `
           <hr/>
@@ -89,4 +94,7 @@
   </div>
 ` }) %>
 
-<% function escapeHtml(str){ return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); } %>
+<% 
+function escapeHtml(str){ return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
+function escapeAttr(str){ return String(str).replace(/["<>]/g, m => ({'"':'&quot;','<':'&lt;','>':'&gt;'}[m])); }
+%>
