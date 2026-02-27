@@ -1,7 +1,7 @@
 {
   "name": "kleindream",
   "version": "1.0.0",
-  "description": "KleinDream - rede social estilo 2004 (sem timeline)",
+  "description": "KleinDream - Transforme seus sonhos em realidade!!",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
