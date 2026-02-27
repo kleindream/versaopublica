@@ -5,7 +5,7 @@
     ${ok ? `<div class="card" style="border-color:#1e5f2b;background:#0b2411;">${ok}</div>` : ""}
 
     <form method="post" action="/profile/edit">
-      <div class="h" style="font-size:14px;margin:8px 0 6px;">Básico</div>
+      <div class="h" style="font-size:14px;margin-top:10px;">Básico</div>
 
       <label class="small">Nome completo</label>
       <input name="full_name" value="${me.full_name || ""}" />
@@ -23,48 +23,33 @@
       <textarea name="bio">${me.bio || ""}</textarea>
 
       <hr/>
-      <div class="h" style="font-size:14px;margin:8px 0 6px;">Detalhes (estilo Orkut)</div>
+      <div class="h" style="font-size:14px;">Detalhes</div>
 
       <label class="small">Data de nascimento</label>
-      <input name="birth_date" placeholder="YYYY-MM-DD" value="${me.birth_date || ""}" />
+      <input type="date" name="birth_date" value="${me.birth_date || ""}" />
 
       <br/><br/>
       <label class="small">Estado civil</label>
       <select name="marital_status">
-        ${selectOpt(me.marital_status, "", "(não informar)")}
-        ${selectOpt(me.marital_status, "Solteiro(a)", "Solteiro(a)")}
-        ${selectOpt(me.marital_status, "Namorando", "Namorando")}
-        ${selectOpt(me.marital_status, "Casado(a)", "Casado(a)")}
-        ${selectOpt(me.marital_status, "Divorciado(a)", "Divorciado(a)")}
-        ${selectOpt(me.marital_status, "É complicado", "É complicado")}
+        ${["","Solteiro(a)","Namorando","Casado(a)","Divorciado(a)","Viúvo(a)","É complicado"].map(v => `
+          <option value="${v}" ${((me.marital_status||"")===v) ? "selected" : ""}>${v==="" ? "—" : v}</option>
+        `).join("")}
       </select>
 
       <br/><br/>
       <label class="small">Time de futebol</label>
-      <input name="favorite_team" value="${me.favorite_team || ""}" />
+      <input name="favorite_team" value="${me.favorite_team || ""}" placeholder="Ex: Flamengo" />
 
       <br/><br/>
       <label class="small">Profissão</label>
-      <input name="profession" value="${me.profession || ""}" />
-
-      <br/><br/>
-      <label class="small">Escolaridade</label>
-      <input name="education" value="${me.education || ""}" />
-
-      <br/><br/>
-      <label class="small">Filhos</label>
-      <input name="children" placeholder="Ex.: Não / Sim / Quantos" value="${me.children || ""}" />
-
-      <br/><br/>
-      <label class="small">Website</label>
-      <input name="website" placeholder="https://" value="${me.website || ""}" />
+      <input name="profession" value="${me.profession || ""}" placeholder="Ex: Técnico de informática" />
 
       <br/><br/>
       <label class="small">Hobbies</label>
-      <input name="hobbies" placeholder="Ex.: games, filmes, informática" value="${me.hobbies || ""}" />
+      <input name="hobbies" value="${me.hobbies || ""}" placeholder="Ex: filmes, games, fóruns..." />
 
       <hr/>
-      <div class="h" style="font-size:14px;margin:8px 0 6px;">Gostos</div>
+      <div class="h" style="font-size:14px;">Gostos</div>
 
       <label class="small">Música favorita</label>
       <input name="favorite_music" value="${me.favorite_music || ""}" />
@@ -78,26 +63,34 @@
       <input name="favorite_game" value="${me.favorite_game || ""}" />
 
       <hr/>
-      <div class="h" style="font-size:14px;margin:8px 0 6px;">Social</div>
+      <div class="h" style="font-size:14px;">Vibe</div>
 
-      <label class="small">O que você procura aqui?</label>
-      <input name="looking_for" placeholder="Ex.: amizades, networking" value="${me.looking_for || ""}" />
+      <label class="small">Personalidade</label>
+      <input name="personality" value="${me.personality || ""}" placeholder="Ex: otimista, realista, perfeccionista..." />
+
+      <br/><br/>
+      <label class="small">Estou procurando</label>
+      <select name="looking_for">
+        ${["","Amizades","Networking","Relacionamento","Comunidade","Só explorar"].map(v => `
+          <option value="${v}" ${((me.looking_for||"")===v) ? "selected" : ""}>${v==="" ? "—" : v}</option>
+        `).join("")}
+      </select>
 
       <br/><br/>
       <label class="small">Humor de hoje</label>
-      <input name="mood" placeholder="Ex.: feliz, neutro, pensativo" value="${me.mood || ""}" />
+      <select name="mood">
+        ${["","😀 Feliz","😐 Neutro","😔 Triste","😡 Irritado","😎 De boa","🔥 Animado"].map(v => `
+          <option value="${v}" ${((me.mood||"")===v) ? "selected" : ""}>${v==="" ? "—" : v}</option>
+        `).join("")}
+      </select>
 
       <br/><br/>
       <label class="small">Frase do dia</label>
       <input name="daily_phrase" value="${me.daily_phrase || ""}" />
 
-      <br/>
+      <br/><br/>
       <button class="btn" type="submit">Salvar</button>
+      <a class="btn secondary" href="/u/${me.username}" style="margin-left:8px;">Voltar</a>
     </form>
   </div>
 ` }) %>
-
-<% function selectOpt(current, value, label){
-  const sel = (String(current || "") === String(value)) ? "selected" : "";
-  return `<option value="${value}" ${sel}>${label}</option>`;
-} %>

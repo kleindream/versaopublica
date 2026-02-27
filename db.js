@@ -21,30 +21,20 @@ function init() {
       bio TEXT,
       city TEXT,
       state TEXT,
-      created_at TEXT DEFAULT (datetime('now'))
-    );
 
-    -- Detalhes do perfil (separado da tabela users para facilitar expansão)
-    CREATE TABLE IF NOT EXISTS profile_details (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      user_id INTEGER NOT NULL UNIQUE,
       birth_date TEXT,
       marital_status TEXT,
       favorite_team TEXT,
       profession TEXT,
-      education TEXT,
-      children TEXT,
-      website TEXT,
       hobbies TEXT,
       favorite_music TEXT,
       favorite_movie TEXT,
       favorite_game TEXT,
+      personality TEXT,
       looking_for TEXT,
       mood TEXT,
       daily_phrase TEXT,
-      updated_at TEXT DEFAULT (datetime('now')),
-      created_at TEXT DEFAULT (datetime('now'))
-    );
+    );
 
     CREATE TABLE IF NOT EXISTS friend_requests (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -154,9 +144,57 @@ function init() {
     CREATE INDEX IF NOT EXISTS idx_testimonials_to_user ON testimonials(to_user_id, status, created_at);
     CREATE INDEX IF NOT EXISTS idx_messages_to_user ON messages(to_user_id, is_read, created_at);
     CREATE INDEX IF NOT EXISTS idx_notifs_user ON notifications(user_id, is_read, created_at);
-
-    CREATE INDEX IF NOT EXISTS idx_profile_details_user ON profile_details(user_id);
   `);
+
+  // Migração simples (Plano A): garante colunas extras no users sem precisar apagar o banco
+  const extraCols = [
+    ["birth_date", "TEXT"],
+    ["marital_status", "TEXT"],
+    ["favorite_team", "TEXT"],
+    ["profession", "TEXT"],
+    ["hobbies", "TEXT"],
+    ["favorite_music", "TEXT"],
+    ["favorite_movie", "TEXT"],
+    ["favorite_game", "TEXT"],
+    ["personality", "TEXT"],
+    ["looking_for", "TEXT"],
+    ["mood", "TEXT"],
+    ["daily_phrase", "TEXT"]
+  ];
+
+  for (const [name, type] of extraCols) {
+    try {
+      db.exec(`ALTER TABLE users ADD COLUMN ${name} ${type}`);
+    } catch (e) {
+      // coluna já existe — ignora
+    }
+  }
+
+
+  // Migração simples (Plano A): garante colunas extras no users sem precisar apagar o banco
+  const extraCols = [
+    ["birth_date", "TEXT"],
+    ["marital_status", "TEXT"],
+    ["favorite_team", "TEXT"],
+    ["profession", "TEXT"],
+    ["hobbies", "TEXT"],
+    ["favorite_music", "TEXT"],
+    ["favorite_movie", "TEXT"],
+    ["favorite_game", "TEXT"],
+    ["personality", "TEXT"],
+    ["looking_for", "TEXT"],
+    ["mood", "TEXT"],
+    ["daily_phrase", "TEXT"]
+  ];
+
+  for (const [name, type] of extraCols) {
+    try {
+      db.exec(`ALTER TABLE users ADD COLUMN ${name} ${type}`);
+    } catch (e) {
+      // coluna já existe — ignora
+    }
+  }
+
 }
 
 module.exports = { db, init };
